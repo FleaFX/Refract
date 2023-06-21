@@ -36,4 +36,16 @@ public static class Prism {
     /// <returns>A <see cref="Prism{T,TResult}"/>.</returns>
     public static Prism<T, TResult> Compose<T, TInter, TResult>(this Prism<T, TInter> prism1, Prism<TInter, TResult> prism2) =>
         new((Func<T, TResult?>)Delegate.Combine((Func<T, TInter?>)prism1, new Func<TInter?, TResult?>(maybe => maybe is {} subject ? ((Func<TInter, TResult?>)prism2)(subject) : default)));
+
+    /// <summary>
+    /// Composes a <see cref="Prism"/> and a <see cref="Lens"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the input subject.</typeparam>
+    /// <typeparam name="TInter">The type of the intermediate subject.</typeparam>
+    /// <typeparam name="TResult">The type of the output subject.</typeparam>
+    /// <param name="prism">The <see cref="Prism"/> to look through first.</param>
+    /// <param name="lens">The <see cref="Lens"/> to look through second.</param>
+    /// <returns>A <see cref="Lens{T,TU}"/>.</returns>
+    public static Lens<T, TResult> Compose<T, TInter, TResult>(this Prism<T, TInter> prism, Lens<TInter?, TResult> lens) =>
+        new((Func<T?, TResult>)Delegate.Combine((Func<T, TInter?>)prism, (Func<TInter?, TResult>)lens));
 }

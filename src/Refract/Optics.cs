@@ -9,7 +9,15 @@ public static class Optics {
     /// </summary>
     /// <typeparam name="T">The type of the elements in the array.</typeparam>
     /// <returns>A <typeparamref name="T"/>.</returns>
-    public static Prism<T[], T> First<T>() => new(array => array.Length > 0 ? array[0] : default);
+    public static Prism<T[], T> FirstOrDefault<T>() => new(array => array.Length > 0 ? array[0] : default);
+
+
+    /// <summary>
+    /// Creates a <see cref="Lens{T,TU}"/> that returns the first element in an array. Throws if the array is empty.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements in the array.</typeparam>
+    /// <returns>A <typeparamref name="T"/>.</returns>
+    public static Lens<T[], T> First<T>() => new(array => array[0]);
 
     /// <summary>
     /// Creates a <see cref="Lens{T,TU}"/> that filters an array whereby only elements that are not <see langword="null" /> satisfy the filter.
