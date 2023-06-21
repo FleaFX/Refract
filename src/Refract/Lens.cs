@@ -24,7 +24,7 @@ public readonly struct Lens<T, TU> {
     /// </summary>
     /// <param name="subject">The source object to read from.</param>
     /// <returns>A <typeparamref name="TU?"/>.</returns>
-    public TU? Get(T subject) => _get(subject);
+    public TU Get(T subject) => _get(subject);
 
     /// <summary>
     /// Writes to the given <paramref name="subject"/>.
@@ -38,7 +38,7 @@ public readonly struct Lens<T, TU> {
     /// </summary>
     /// <param name="get">The getter function to deconstruct to.</param>
     /// <param name="set">The setter function to deconstruct to.</param>
-    public void Deconstruct(out Func<T, TU?> get, out Action<T, TU> set) => (get, set) = (_get, _set);
+    public void Deconstruct(out Func<T, TU> get, out Action<T, TU> set) => (get, set) = (_get, _set);
 
     /// <summary>
     /// Implicitly casts the given <see cref="Lens{T,TU}"/> to a <see cref="Func{TResult}"/> that reads a <typeparamref name="T"/>.
