@@ -33,4 +33,12 @@ public static class Array {
     /// <param name="selectorLens">The lens that maps a <typeparamref name="T"/> to a <typeparamref name="TU"/>.</param>
     /// <returns>A <see cref="Lens{T,TU}"/>.</returns>
     public static Lens<T[], TU[]> Select<T, TU>(Lens<T, TU> selectorLens) => new(array => array.Select(selectorLens.Get).ToArray());
+
+    /// <summary>
+    /// Creates a <see cref="Lens"/> that filters the element of a given sequence.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements in the sequence.</typeparam>
+    /// <param name="filterLens">The lens that implements a predicate to determine which elements satisfy the filter.</param>
+    /// <returns>A <see cref="Lens{T,TU}"/>.</returns>
+    public static Lens<T[], T[]> Where<T>(Lens<T, bool> filterLens) => new(array => array.Where(filterLens.Get).ToArray());
 }
