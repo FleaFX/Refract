@@ -1,4 +1,6 @@
-﻿namespace Refract;
+﻿using System.Security.Cryptography.X509Certificates;
+
+namespace Refract;
 
 /// <summary>
 /// Provides an abstract view over a <typeparamref name="T"/>.
@@ -70,6 +72,21 @@ public static class Isomorphism {
         );
 
     /// <summary>
+    /// Composes a <see cref="Isomorphism{T,TU}"/> and a <see cref="Lens{T,TU}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the input subject.</typeparam>
+    /// <typeparam name="TInter">The isomorphic type of the input subject.</typeparam>
+    /// <typeparam name="TU">The type of the lens projection.</typeparam>
+    /// <param name="isomorphism">The isomorphism to apply.</param>
+    /// <param name="lens">The lens to look through.</param>
+    /// <returns>A <see cref="Lens{T,TU}"/>.</returns>
+    public static Lens<T, TU> Compose<T, TInter, TU>(this Isomorphism<TInter, T> isomorphism, Lens<TInter, TU> lens) =>
+        new(
+            get: subject => lens.Get(isomorphism.Get(subject)),
+            set: (value, subject) => isomorphism.Get(lens.Set(value, isomorphism.Get(subject)))
+        );
+
+    /// <summary>
     /// Composes two <see cref="Isomorphism{T,TU}"/>.
     /// </summary>
     /// <typeparam name="T">The type of the input subject.</typeparam>
@@ -79,6 +96,21 @@ public static class Isomorphism {
     /// <param name="iso2">The second isomorphism to apply.</param>
     /// <returns>A <see cref="Isomorphism{T,TU}"/>.</returns>
     public static Isomorphism<T, TU> Compose<T, TInter, TU>(this Isomorphism<T, TInter> iso1, Isomorphism<TInter, TU> iso2) =>
+        new(
+            forward: subject => iso2.Get(iso1.Get(subject)),
+            backward: subject => iso1.Get(iso2.Get(subject))
+        );
+
+    /// <summary>
+    /// Composes two <see cref="Isomorphism{T,TU}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the input subject.</typeparam>
+    /// <typeparam name="TInter">The isomorphic type of the input subject.</typeparam>
+    /// <typeparam name="TU">The isomorphic type twice removed from the input subject.</typeparam>
+    /// <param name="iso1">The first isomorphism to apply.</param>
+    /// <param name="iso2">The second isomorphism to apply.</param>
+    /// <returns>A <see cref="Isomorphism{T,TU}"/>.</returns>
+    public static Isomorphism<T, TU> Compose<T, TInter, TU>(this Isomorphism<T, TInter> iso1, Isomorphism<TU, TInter> iso2) =>
         new(
             forward: subject => iso2.Get(iso1.Get(subject)),
             backward: subject => iso1.Get(iso2.Get(subject))
