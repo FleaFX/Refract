@@ -69,6 +69,21 @@ public static class AsyncEnumerable {
     public static Lens<IAsyncEnumerable<T>, IAsyncEnumerable<IAsyncGrouping<TKey, T>>> GroupBy<T, TKey>(Lens<T, TKey> keySelectorLens) => new(asyncEnumerable => asyncEnumerable.GroupBy(keySelectorLens.Get));
 
     /// <summary>
+    /// Creates a <see cref="Lens"/> that returns a <see cref="IAsyncEnumerable{T}"/> that contains only distinct elements.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements in the sequence.</typeparam>
+    /// <returns>A <see cref="Lens{T,TU}"/>.</returns>
+    public static Lens<IAsyncEnumerable<T>, IAsyncEnumerable<T>> Distinct<T>() => new(asyncEnumerable => asyncEnumerable.Distinct());
+
+    /// <summary>
+    /// Creates a <see cref="Lens"/> that returns a <see cref="IAsyncEnumerable{T}"/> that contains only distinct elements.
+    /// </summary>
+    /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> to use when comparing the source elements.</param>
+    /// <typeparam name="T">The type of the elements in the sequence.</typeparam>
+    /// <returns>A <see cref="Lens{T,TU}"/>.</returns>
+    public static Lens<IAsyncEnumerable<T>, IAsyncEnumerable<T>> Distinct<T>(IEqualityComparer<T> comparer) => new(asyncEnumerable => asyncEnumerable.Distinct(comparer));
+
+    /// <summary>
     /// Gets the key of a <see cref="IAsyncGrouping{TKey,TElement}"/>.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the sequence.</typeparam>
