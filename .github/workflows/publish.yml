@@ -1,0 +1,29 @@
+# Publish workflow for GitHub actions
+
+name: Publish package
+
+on:
+    workflow_run:
+        workflows: ["Build & test"]
+        branches: [ "main" ]
+        types:
+        - completed
+
+jobs:
+    publish:
+    
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v3
+  
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: '7.0.x'
+
+        - name: Pack
+          run: dotnet pack -p:PackageId=${{ env.NUGETPACKID }} -p:Description=${{ env.NUGETPACKDESCRIPTION }} -p:Authors=${{ env.NUGETPACKAUTHORS }} -p:Copyright=${{ env.NUGETPACKCOPYRIGHT }} -p:PackageProjectUrl=${{ env.NUGETPACKPROJECTURL }} -c Release 
+
+        - name: Push
+          run: dotnet nuget push src/Refract/bin/Release/Refract.*.nupkg -k ${{ secrets.NUGETAPIKEY }} -s ${{ env.NUGETPUSHSOURCE }}
