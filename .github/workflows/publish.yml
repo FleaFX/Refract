@@ -23,7 +23,7 @@ jobs:
             dotnet-version: '7.0.x'
 
         - name: Pack
-          run: dotnet pack -p:PackageId=${{ vars.NUGETPACKID }} -p:Description=${{ vars.NUGETPACKDESCRIPTION }} -p:Authors=${{ vars.NUGETPACKAUTHORS }} -p:Copyright=${{ vars.NUGETPACKCOPYRIGHT }} -p:PackageProjectUrl=${{ vars.NUGETPACKPROJECTURL }} -c Release src/Refract/
+          run: dotnet pack -p:PackageId="${{ vars.NUGETPACKID }}" -p:Description="${{ vars.NUGETPACKDESCRIPTION }}" -p:Authors="${{ vars.NUGETPACKAUTHORS }}" -p:Copyright="${{ vars.NUGETPACKCOPYRIGHT }}" -p:PackageProjectUrl="${{ vars.NUGETPACKPROJECTURL }}" -c Release src/Refract/
 
         - name: Push
           run: dotnet nuget push src/Refract/bin/Release/Refract.*.nupkg -k ${{ secrets.NUGETAPIKEY }} -s ${{ vars.NUGETPUSHSOURCE }}
