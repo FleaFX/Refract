@@ -85,21 +85,6 @@ public static class Lens {
         );
 
     /// <summary>
-    /// Composes a <see cref="Lens{T,TU}"/> and a <see cref="Isomorphism{T,TU}"/> by running the reverse isomorphism.
-    /// </summary>
-    /// <typeparam name="T">The type of the input subject.</typeparam>
-    /// <typeparam name="TInter">The type of the lens projection.</typeparam>
-    /// <typeparam name="TU">The isomorphic type of the lens projection.</typeparam>
-    /// <param name="lens">The lens to look through.</param>
-    /// <param name="isomorphism">The isomorphism to apply.</param>
-    /// <returns>A <see cref="Lens{T,TU}"/>.</returns>
-    public static Lens<T, TU> ComposeReverse<T, TInter, TU>(this Lens<T, TInter> lens, Isomorphism<TU, TInter> isomorphism) =>
-        new(
-            get: subject => isomorphism.Get(lens.Get(subject)),
-            set: (value, subject) => lens.Set(isomorphism.Get(value), subject)
-        );
-
-    /// <summary>
     /// Composes a <see cref="Lens{T,TU}"/> and a <see cref="Prism{T,TU}"/>.
     /// </summary>
     /// <typeparam name="T">The type of the input subject.</typeparam>
