@@ -57,6 +57,18 @@ public readonly struct Isomorphism<T, TU> {
 
 public static class Isomorphism {
     /// <summary>
+    /// Creates a <see cref="Isomorphism{T,TU}"/> that is the inverse of the given <see cref="Isomorphism{T,TU}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the source object.</typeparam>
+    /// <typeparam name="TU">The type of the result object.</typeparam>
+    /// <param name="iso">The <see cref="Isomorphism{T,TU}"/> to inverse.</param>
+    /// <returns>The inverse <see cref="Isomorphism{T,TU}"/>.</returns>
+    public static Isomorphism<TU, T> Inverse<T, TU>(this Isomorphism<T, TU> iso) {
+        var (forward, backward) = iso;
+        return new(backward, forward);
+    }
+
+    /// <summary>
     /// Composes a <see cref="Isomorphism{T,TU}"/> and a <see cref="Lens{T,TU}"/>.
     /// </summary>
     /// <typeparam name="T">The type of the input subject.</typeparam>
