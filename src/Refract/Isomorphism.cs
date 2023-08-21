@@ -53,6 +53,13 @@ public readonly struct Isomorphism<T, TU> {
     /// </summary>
     /// <param name="instance">The <see cref="Isomorphism{T,TU}"/> to cast.</param>
     public static implicit operator Func<TU, T>(Isomorphism<T, TU> instance) => instance._backward;
+
+    /// <summary>
+    /// Creates a <see cref="Isomorphism{T,TU}"/> that is the inverse of the given <see cref="Isomorphism{T,TU}"/>.
+    /// </summary>
+    /// <param name="instance">The <see cref="Isomorphism{T,TU}"/> to inverse.</param>
+    /// <returns>The inverse <see cref="Isomorphism{T,TU}"/>.</returns>
+    public static Isomorphism<TU, T> operator !(Isomorphism<T, TU> instance) => new(instance._backward, instance._forward);
 }
 
 public static class Isomorphism {
@@ -63,10 +70,7 @@ public static class Isomorphism {
     /// <typeparam name="TU">The type of the result object.</typeparam>
     /// <param name="iso">The <see cref="Isomorphism{T,TU}"/> to inverse.</param>
     /// <returns>The inverse <see cref="Isomorphism{T,TU}"/>.</returns>
-    public static Isomorphism<TU, T> Inverse<T, TU>(this Isomorphism<T, TU> iso) {
-        var (forward, backward) = iso;
-        return new(backward, forward);
-    }
+    public static Isomorphism<TU, T> Inverse<T, TU>(this Isomorphism<T, TU> iso) => !iso;
 
     /// <summary>
     /// Composes a <see cref="Isomorphism{T,TU}"/> and a <see cref="Lens{T,TU}"/>.
