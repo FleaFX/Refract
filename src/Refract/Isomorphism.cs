@@ -116,19 +116,4 @@ public static class Isomorphism {
             forward: subject => iso2.Get(iso1.Get(subject)),
             backward: subject => iso1.Get(iso2.Get(subject))
         );
-
-    /// <summary>
-    /// Composes two <see cref="Isomorphism{T,TU}"/>.
-    /// </summary>
-    /// <typeparam name="T">The type of the input subject.</typeparam>
-    /// <typeparam name="TInter">The isomorphic type of the input subject.</typeparam>
-    /// <typeparam name="TU">The isomorphic type twice removed from the input subject.</typeparam>
-    /// <param name="iso1">The first isomorphism to apply.</param>
-    /// <param name="iso2">The second isomorphism to apply.</param>
-    /// <returns>A <see cref="Isomorphism{T,TU}"/>.</returns>
-    public static Isomorphism<T, TU> Compose<T, TInter, TU>(this Isomorphism<T, TInter> iso1, Isomorphism<TU, TInter> iso2) =>
-        new(
-            forward: subject => iso2.Get(iso1.Get(subject)),
-            backward: subject => iso1.Get(iso2.Get(subject))
-        );
 }
