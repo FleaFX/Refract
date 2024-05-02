@@ -55,6 +55,17 @@ public readonly struct Lens<T, TU> {
 
 public static class Lens {
     /// <summary>
+    /// Uses the given <paramref name="lens"/> to get a <typeparamref name="TU"/> from the given <paramref name="subject"/> and passes it through the given <paramref name="map"/> function and then sets the result back on the subject.
+    /// </summary>
+    /// <typeparam name="T">The type of the subject.</typeparam>
+    /// <typeparam name="TU">The type of the output subject of the lens.</typeparam>
+    /// <param name="subject">The subject to map.</param>
+    /// <param name="lens">The <see cref="Lens{T,TU}"/> to use.</param>
+    /// <param name="map">The mapping function.</param>
+    /// <returns>The subject with the mapping function applied.</returns>
+    public static T GetAndSet<T, TU>(this Lens<T, TU> lens, T subject, Func<TU, TU> map) => lens.Set(map(lens.Get(subject)), subject);
+
+    /// <summary>
     /// Composes two <see cref="Lens{T,TU}"/>.
     /// </summary>
     /// <typeparam name="T">The type of the input subject.</typeparam>
