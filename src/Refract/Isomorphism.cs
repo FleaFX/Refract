@@ -14,8 +14,23 @@ public readonly struct Isomorphism<T, TU> {
     /// </summary>
     public Isomorphism() {
         var (t, tu) = (typeof(T), typeof(TU));
-        var forward = t.GetMethod("op_Explicit", [t]) ?? t.GetMethod("op_Implicit", [t]);
-        var backward = t.GetMethod("op_Explicit", [tu]) ?? t.GetMethod("op_Implicit", [tu]);
+
+        var forward = (
+            from method in t.GetMethods()
+            let parameters = method.GetParameters()
+            where (method.Name == "op_Explicit" || method.Name == "op_Implicit") &&
+                  parameters is [{ ParameterType: var parameterType }] && parameterType == t &&
+                  method.ReturnType == tu
+            select method).FirstOrDefault();
+
+        var backward = (
+            from method in t.GetMethods()
+            let parameters = method.GetParameters()
+            where (method.Name == "op_Explicit" || method.Name == "op_Implicit") &&
+                  parameters is [{ ParameterType: var parameterType }] && parameterType == tu &&
+                  method.ReturnType == t
+            select method).FirstOrDefault();
+
         if (forward is null || backward is null) throw new InvalidOperationException("The given type cannot be converted to an Isomorphism because it doesn't define the appropriate cast operators.");
         _forward = sub => (TU)forward.Invoke(sub, [sub])!;
         _backward = sub => (T)backward.Invoke(sub, [sub])!;
