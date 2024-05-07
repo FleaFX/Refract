@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-namespace Refract;
+﻿namespace Refract;
 
 /// <summary>
 /// Provides an abstract view over a <typeparamref name="T"/>.
@@ -10,6 +8,18 @@ namespace Refract;
 public readonly struct Isomorphism<T, TU> {
     readonly Func<T, TU> _forward;
     readonly Func<TU, T> _backward;
+
+    /// <summary>
+    /// Initializes a new <see cref="Isomorphism{T,TU}"/> by checking for cast operators on <typeparamref name="T"/>.
+    /// </summary>
+    public Isomorphism() {
+        var (t, tu) = (typeof(T), typeof(TU));
+        var forward = t.GetMethod("op_Explicit", [t]) ?? t.GetMethod("op_Implicit", [t]);
+        var backward = t.GetMethod("op_Explicit", [tu]) ?? t.GetMethod("op_Implicit", [tu]);
+        if (forward is null || backward is null) throw new InvalidOperationException("The given type cannot be converted to an Isomorphism because it doesn't define the appropriate cast operators.");
+        _forward = sub => (TU)forward.Invoke(sub, [sub])!;
+        _backward = sub => (T)backward.Invoke(sub, [sub])!;
+    }
 
     /// <summary>
     /// Initializes a new <see cref="Isomorphism{T,TU}"/>.
@@ -63,6 +73,15 @@ public readonly struct Isomorphism<T, TU> {
 }
 
 public static class Isomorphism {
+    /// <summary>
+    /// Creates a new <see cref="Isomorphism{T,TU}"/> for the given types.
+    /// </summary>
+    /// <remarks>The source type <typeparamref name="T"/> MUST implement cast operators to and from <typeparamref name="TU"/> for this method to work.</remarks>
+    /// <typeparam name="T">The type of the source object.</typeparam>
+    /// <typeparam name="TU">The type of the result object.</typeparam>
+    /// <returns>A <see cref="Isomorphism{T,TU}"/>.</returns>
+    public static Isomorphism<T, TU> Auto<T, TU>() => new();
+
     /// <summary>
     /// Creates a <see cref="Isomorphism{T,TU}"/> that is the inverse of the given <see cref="Isomorphism{T,TU}"/>.
     /// </summary>
