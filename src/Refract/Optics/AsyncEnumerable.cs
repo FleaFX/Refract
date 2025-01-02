@@ -52,12 +52,31 @@ public static class AsyncEnumerable {
     public static Lens<IAsyncEnumerable<T>, IAsyncEnumerable<TU>> Select<T, TU>(Lens<T, TU> selectorLens) => new(asyncEnumerable => asyncEnumerable.Select(selectorLens.Get));
 
     /// <summary>
+    /// Creates a <see cref="Lens"/> that maps the elements of the given grouped sequence to another type.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key element.</typeparam>
+    /// <typeparam name="T">The type of the elements in the source sequence.</typeparam>
+    /// <typeparam name="TU">The type of the elements in the resulting sequence.</typeparam>
+    /// <param name="selectorLens">The lens that maps a <typeparamref name="T"/> to a <typeparamref name="TU"/>.</param>
+    /// <returns>A <see cref="Lens{T,TU}"/>.</returns>
+    public static Lens<IAsyncGrouping<TKey, T>, IAsyncEnumerable<TU>> Select<TKey, T, TU>(Lens<T, TU> selectorLens) => new(asyncGrouping => asyncGrouping.Select(selectorLens.Get));
+
+    /// <summary>
     /// Creates a <see cref="Lens"/> that filters the element of a given sequence.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the sequence.</typeparam>
     /// <param name="filterLens">The lens that implements a predicate to determine which elements satisfy the filter.</param>
     /// <returns>A <see cref="Lens{T,TU}"/>.</returns>
     public static Lens<IAsyncEnumerable<T>, IAsyncEnumerable<T>> Where<T>(Lens<T, bool> filterLens) => new(asyncEnumerable => asyncEnumerable.Where(filterLens.Get));
+
+    /// <summary>
+    /// Creates a <see cref="Lens"/> that maps the elements of the given grouped sequence to another type.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key element.</typeparam>
+    /// <typeparam name="T">The type of the elements in the source sequence.</typeparam>
+    /// <param name="filterLens">The lens that implements a predicate to determine which elements satisfy the filter.</param>
+    /// <returns>A <see cref="Lens{T,TU}"/>.</returns>
+    public static Lens<IAsyncGrouping<TKey, T>, IAsyncEnumerable<T>> Where<TKey, T>(Lens<T, bool> filterLens) => new(asyncGrouping => asyncGrouping.Where(filterLens.Get));
 
     /// <summary>
     /// Creates a <see cref="Lens"/> that groups the elements of a sequence according to a specified key selector lens.
